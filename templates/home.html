@@ -14,7 +14,7 @@
   </form>
   <ul>
     {% for note in note_list %}
-      <li>{{ note.text }} <a href="{% url 'delete_note' note.pk %}">Delete</a></li>
+      <li>{{ note.text|safe }} <a href="{% url 'delete_note' note.pk %}">Delete</a></li>
     {% endfor %}
   </ul>
   <p><a href="{% url 'create_note' %}">Create Note</a></p>
