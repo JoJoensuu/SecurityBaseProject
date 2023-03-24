@@ -1,0 +1,26 @@
+<!-- templates/home.html-->
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+  Hi {{ user.username }}!
+  <h1>Notes in database</h1>
+  <h2>Filter notes</h2>
+  <form action="{% url 'home' %}" method="GET">
+    <input type="text" name="filter" placeholder="Search notes">
+    <button type="submit">Search</button>
+  </form>
+  <ul>
+    {% for note in note_list %}
+      <li>{{ note.text }} <a href="{% url 'delete_note' note.pk %}">Delete</a></li>
+    {% endfor %}
+  </ul>
+  <p><a href="{% url 'create_note' %}">Create Note</a></p>
+  <p><a href="{% url 'logout' %}">Log Out</a></p>
+{% else %}
+  <p>You are not logged in</p>
+  <a href="{% url 'login' %}">Log In</a>
+{% endif %}
+{% endblock %}
