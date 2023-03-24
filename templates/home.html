@@ -14,6 +14,7 @@
   </form>
   <ul>
     {% for note in note_list %}
+        <!-- REMOVE |safe FROM BELOW {{ note.text|safe }} TO FIX XSS VULNERABILITY-->
       <li>{{ note.text|safe }} <a href="{% url 'delete_note' note.pk %}">Delete</a></li>
     {% endfor %}
   </ul>

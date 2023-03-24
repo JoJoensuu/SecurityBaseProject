@@ -8,8 +8,8 @@ from .forms import NoteForm
 from django.db import connection
 from django.http import HttpResponseRedirect
 
-#CSRF Vulnerability:
-#When fixing vulnerability these imports are no longer needed.
+# CSRF Vulnerability:
+# When fixing vulnerability these imports are no longer needed.
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 
@@ -28,22 +28,37 @@ class HomePageView(LoginRequiredMixin, ListView):
         queryset = super().get_queryset()
         query = self.request.GET.get("filter")
         if query:
+            # SQL INJECTION VULNERABILITY:
+            # Replace below queryset with
+                # queryset = queryset.filter(text__icontains=query, user_id=self.request.user.id)
+            # to fix vulnerability
             queryset = queryset.raw(f"SELECT * FROM notes_note WHERE text LIKE '%{query}%' AND user_id = {self.request.user.id}")
         else:
             queryset = queryset.filter(user=self.request.user)
         return queryset
-    
+
+            # BROKEN ACCESS CONTROL VULNERABILITY:
+            # To fix add LoginRequiredMixin to CreateNoteView parameters.
+
 class CreateNoteView(generic.CreateView):
     form_class = NoteForm
     success_url = reverse_lazy("home")
     template_name = "create_note.html"
 
-    #CSRF VULNERABILITY:
-    #Remove this method entirely to fix.
+            # CSRF VULNERABILITY:
+            # Remove this method entirely to fix.
+
     @method_decorator(csrf_exempt)
     def dispatch(self, *args, **kwargs):
         self.csrf_exempt = True
         return super().dispatch(*args, **kwargs)
+    
+    # SQL INJECTION VULNERABILITY:
+    # Replace below form_valid function with
+        #     def form_valid(self, form):
+        #        form.instance.user = self.request.user
+        #        return super().form_valid(form)
+    # to fix
 
     def form_valid(self, form):
         text = form.cleaned_data['text']
