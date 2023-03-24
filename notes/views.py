@@ -28,7 +28,7 @@ class HomePageView(LoginRequiredMixin, ListView):
             queryset = queryset.filter(user=self.request.user)
         return queryset
     
-class CreateNoteView(LoginRequiredMixin, generic.CreateView):
+class CreateNoteView(generic.CreateView):
     form_class = NoteForm
     success_url = reverse_lazy("home")
     template_name = "create_note.html"
