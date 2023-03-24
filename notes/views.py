@@ -8,6 +8,11 @@ from .forms import NoteForm
 from django.db import connection
 from django.http import HttpResponseRedirect
 
+#CSRF Vulnerability:
+#When fixing vulnerability these imports are no longer needed.
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+
 
 class SignUpView(generic.CreateView):
     form_class = UserCreationForm
@@ -33,16 +38,22 @@ class CreateNoteView(generic.CreateView):
     success_url = reverse_lazy("home")
     template_name = "create_note.html"
 
+    #CSRF VULNERABILITY:
+    #Remove this method entirely to fix.
+    @method_decorator(csrf_exempt)
+    def dispatch(self, *args, **kwargs):
+        self.csrf_exempt = True
+        return super().dispatch(*args, **kwargs)
+
     def form_valid(self, form):
         text = form.cleaned_data['text']
         user_id = self.request.user.pk
 
         with connection.cursor() as cursor:
             cursor.execute('INSERT INTO notes_note (text, user_id) VALUES ("%s", %s)' % (text, user_id))
-            print(connection.queries)
         
         return HttpResponseRedirect(reverse("home"))
-    
+
 class DeleteNoteView(UserPassesTestMixin, generic.DeleteView):
     model = Note
     success_url = reverse_lazy("home")

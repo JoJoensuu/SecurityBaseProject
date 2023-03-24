@@ -5,7 +5,6 @@
 {% block content %}
   <h2>Create Note</h2>
   <form method="post">
-    {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">Create Note</button>
   </form>
