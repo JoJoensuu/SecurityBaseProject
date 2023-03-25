@@ -9,6 +9,16 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+    # Brute-force prevention:
+    # Include the following in your settings:
+    # In INSTALLED_APPS add 'ratelimit'
+    # In MIDDLEWARE add 'ratelimit.middleware.RatelimitMiddleware'
+    # Add the following to the settings:
+    # RATELIMIT_ENABLE = True
+    # RATELIMIT_VIEW = "django.contrib.auth.views.LoginView"
+    # RATELIMIT_KEY = "user"
+    # RATELIMIT_RATE = "5/hour"
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
