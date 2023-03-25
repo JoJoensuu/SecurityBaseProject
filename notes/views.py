@@ -7,7 +7,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .forms import NoteForm
 from django.db import connection
 from django.http import HttpResponseRedirect
-from django.utils.html import escape
 
 # CSRF Vulnerability:
 # When fixing vulnerability these imports are no longer needed.
@@ -56,10 +55,9 @@ class CreateNoteView(generic.CreateView):
     
             # SQL INJECTION VULNERABILITY:
             # Replace below form_valid function with
-                #     def form_valid(self, form):
-                #        form.instance.user = self.request.user
-                #        return super().form_valid(form)
-            # to fix        <!-- REMOVE |safe FROM BELOW {{ note.text|safe }} TO FIX XSS VULNERABILITY-->
+            # def form_valid(self, form):
+            #   form.instance.user = self.request.user
+            #   return super().form_valid(form)
 
     def form_valid(self, form):
         text = form.cleaned_data['text']
